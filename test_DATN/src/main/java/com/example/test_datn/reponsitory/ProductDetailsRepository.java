@@ -12,8 +12,9 @@ import java.util.Optional;
 @Repository
 public interface ProductDetailsRepository extends JpaRepository<ProductDetails, Long> {
 
+    // Fetch product details by ID
     @Query("SELECT new com.example.test_datn.dto.ProductDetailsDTO(" +
-            "p.productname, dp.price, pc.colorValue, ps.sizeValue, w.weightValue, dp.quantity) " +
+            "dp.productDetailId, p.productname, dp.price, pc.colorValue, ps.sizeValue, w.weightValue, dp.quantity) " +
             "FROM ProductDetails dp " +
             "JOIN dp.products p " +
             "JOIN dp.productColors pc " +
@@ -22,10 +23,9 @@ public interface ProductDetailsRepository extends JpaRepository<ProductDetails, 
             "WHERE dp.productDetailId = :productDetailId")
     Optional<ProductDetailsDTO> findByProductDetailId(Long productDetailId);
 
-
-    // Câu query để lấy tất cả chi tiết sản phẩm
+    // Fetch all product details
     @Query("SELECT new com.example.test_datn.dto.ProductDetailsDTO(" +
-            "p.productname, dp.price, pc.colorValue, ps.sizeValue, w.weightValue, dp.quantity) " +
+            "dp.productDetailId, p.productname, dp.price, pc.colorValue, ps.sizeValue, w.weightValue, dp.quantity) " +
             "FROM ProductDetails dp " +
             "JOIN dp.products p " +
             "JOIN dp.productColors pc " +
@@ -33,6 +33,7 @@ public interface ProductDetailsRepository extends JpaRepository<ProductDetails, 
             "JOIN dp.weights w")
     List<ProductDetailsDTO> findAllProductDetails();
 
+    // Fetch product detail by color, size, and weight
     @Query("SELECT pd FROM ProductDetails pd " +
             "JOIN pd.productColors pc " +
             "JOIN pd.productSizes ps " +

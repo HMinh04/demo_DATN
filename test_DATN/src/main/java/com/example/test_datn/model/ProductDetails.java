@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
+import java.util.List;
+
 @Data
 @Setter
 @Getter
@@ -42,4 +44,7 @@ public class ProductDetails {
     @ManyToOne
     @JoinColumn(name = "product_color_id", nullable = false)
     private ProductColors productColors;
+
+    @OneToMany(mappedBy = "productDetails")  // This should be a one-to-many relationship
+    private List<ProductImages> productImages;
 }
