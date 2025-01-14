@@ -37,21 +37,22 @@ public class ProductDetailsController {
     @GetMapping("/getProductDetails")
     public ProductDetailsDTO getProductDetails(
             @RequestParam(required = false) Long productDetailId,
-            @RequestParam(required = false) String colorValue,
-            @RequestParam(required = false) String sizeValue,
-            @RequestParam(required = false) String weightValue) {
+            @RequestParam(required = false) String color,  // Thay colorValue thành color
+            @RequestParam(required = false) String size,   // Thay sizeValue thành size
+            @RequestParam(required = false) String weight) {  // Thay weightValue thành weight
 
         if (productDetailId != null) {
             // Nếu có productDetailId, tìm sản phẩm dựa trên ID
             return productDetailsService.getProductDetailsById(productDetailId);
-        } else if (colorValue != null && sizeValue != null && weightValue != null) {
+        } else if (color != null && size != null && weight != null) {
             // Nếu không có productDetailId, tìm ID bằng biến thể và lấy thông tin sản phẩm
-            Long foundProductDetailId = productDetailsService.getProductDetailIdByVariants(colorValue, sizeValue, weightValue);
+            Long foundProductDetailId = productDetailsService.getProductDetailIdByVariants(color, size, weight);
             return productDetailsService.getProductDetailsById(foundProductDetailId);
         } else {
             throw new RuntimeException("Thiếu tham số cần thiết để tìm sản phẩm.");
         }
     }
+
 
 
 }

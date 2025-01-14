@@ -16,8 +16,13 @@ public class ProductDetailsService {
 
     // Phương thức lấy tất cả chi tiết sản phẩm dưới dạng ProductDetailsDTO
     public List<ProductDetailsDTO> findAllProductDetails() {
-        return productDetailsRepository.findAllProductDetails();
+        List<ProductDetailsDTO> productDetailsList = productDetailsRepository.findAllProductDetails();
+        if (productDetailsList == null || productDetailsList.isEmpty()) {
+            throw new RuntimeException("Không có chi tiết sản phẩm nào trong cơ sở dữ liệu.");
+        }
+        return productDetailsList;
     }
+
 
     // Phương thức lấy chi tiết sản phẩm theo ID
     public ProductDetailsDTO getProductDetailsById(Long productDetailId) {
