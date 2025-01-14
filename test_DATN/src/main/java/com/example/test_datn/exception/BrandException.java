@@ -1,4 +1,4 @@
 package com.example.test_datn.exception;
 
-public class demo {
+public class BrandException {
 }
