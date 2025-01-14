@@ -26,6 +26,18 @@ public class BrandService {
         return brandRepository.save(brand);
     }
 
+    public Optional<Brand> updateBrand(Long brandId, Brand brand) {
+        Optional<Brand> existingBrandOpt = brandRepository.findById(brandId);
+        if (existingBrandOpt.isPresent()) {
+            Brand existingBrand = existingBrandOpt.get();
+            // Cập nhật các thuộc tính của thương hiệu
+            existingBrand.setBrandName(brand.getBrandName());
+            // Lưu lại thương hiệu đã cập nhật
+            return Optional.of(brandRepository.save(existingBrand));
+        }
+        return Optional.empty(); // Trả về Optional.empty() nếu không tìm thấy thương hiệu
+    }
+
     public void deleteBrand(Long BrandId) {
         brandRepository.deleteById(BrandId);
     }
