@@ -1,10 +1,12 @@
 package com.example.test_datn.controller;
 
 import com.example.test_datn.dto.ProductDetailsDTO;
+import com.example.test_datn.model.ProductDetails;
 import com.example.test_datn.service.ProductDetailsService;
 import com.example.test_datn.service.ProductImagesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -87,6 +89,43 @@ public ProductDetailsDTO getProductDetails(
         throw new RuntimeException("Thiếu tham số cần thiết để tìm sản phẩm.");
     }
 }
+
+
+
+    /**
+     * Lấy danh sách ProductDetails theo productId.
+     *
+     * @param productId ID của sản phẩm.
+     * @return Danh sách ProductDetails.
+     */
+    @GetMapping("/by-product/{productId}")
+    public ResponseEntity<List<ProductDetails>> getProductDetailsByProductId(@PathVariable Long productId) {
+        List<ProductDetails> productDetailsList = productDetailsService.getProductDetailsByProductId(productId);
+        return ResponseEntity.ok(productDetailsList);
+    }
+
+    /**
+     * Lấy danh sách ProductDetailsDTO theo productId (chỉ trả lại thông tin cần thiết).
+     *
+     * @param productId ID của sản phẩm.
+     * @return Danh sách ProductDetailsDTO.
+     */
+    @GetMapping("/dto/by-product/{productId}")
+    public ResponseEntity<List<ProductDetailsDTO>> getProductDetailsDTOByProductId(@PathVariable Long productId) {
+        // Lấy danh sách ProductDetailsDTO theo productId
+        List<ProductDetailsDTO> productDetailsDTOList = productDetailsService.getProductDetailsDTOByProductId(productId);
+
+        // Duyệt qua danh sách và thêm imageUrls từ ProductImagesService
+        for (ProductDetailsDTO productDetails : productDetailsDTOList) {
+            List<String> imageUrls = productImagesService.getImageUrlsByProductDetailId(productDetails.getProductDetailId());
+
+            if (imageUrls != null && !imageUrls.isEmpty()) {
+                productDetails.setImageUrls(imageUrls); // Gán danh sách URL hình ảnh
+            }
+        }
+
+        return ResponseEntity.ok(productDetailsDTOList); // Trả về danh sách DTO
+    }
 
 
 

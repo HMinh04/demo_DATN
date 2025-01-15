@@ -13,7 +13,7 @@ public class ProductDetailsDTO {
     private String colorValue;
     private String sizeValue;
     private float weightValue;
-    private Integer quantity;
+    private int quantity;
     private String description;
 
     private List<String> imageUrls;  // Để có thể lưu trữ ảnh nếu cần

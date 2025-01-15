@@ -62,5 +62,9 @@ public interface ProductDetailsRepository extends JpaRepository<ProductDetails, 
     @Query("SELECT MIN(pd.price) FROM ProductDetails pd WHERE pd.products.productid = :productId")
     Float findMinPriceByProductId(@Param("productId") Long productId);
 
+    // Tìm tất cả ProductDetails theo productId
+    @Query("SELECT pd FROM ProductDetails pd WHERE pd.products.productid = :productId")
+    List<ProductDetails> findByProductId(@Param("productId") Long productId);
+
 
 }
