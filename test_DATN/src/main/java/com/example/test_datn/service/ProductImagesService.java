@@ -5,6 +5,7 @@ import com.example.test_datn.reponsitory.ProductImagesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -48,5 +49,17 @@ public class ProductImagesService {
             return productImagesList.get(0); // Lấy ảnh đầu tiên
         }
         return null; // Nếu không có ảnh, trả về null
+    }
+
+    public List<String> getImageUrlsByProductDetailId(Long productDetailId) {
+        List<ProductImages> productImagesList = productImagesRepository.findByProductDetails_ProductDetailId(productDetailId);
+        List<String> imageUrls = null;
+        if (productImagesList != null && !productImagesList.isEmpty()) {
+            imageUrls = new ArrayList<>();
+            for (ProductImages productImages : productImagesList) {
+                imageUrls.add(productImages.getImageUrl());
+            }
+        }
+        return imageUrls;
     }
 }
