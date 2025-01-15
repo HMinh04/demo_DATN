@@ -2,11 +2,12 @@ package com.example.test_datn.service;
 
 import com.example.test_datn.dto.ProductDetailsDTO;
 import com.example.test_datn.model.ProductDetails;
-import com.example.test_datn.repository.ProductDetailsRepository;
+import com.example.test_datn.reponsitory.ProductDetailsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,4 +38,28 @@ public class ProductDetailsService {
 
         return productDetails.getProductDetailId(); // Trả về productDetailId
     }
+
+    public List<ProductDetails> getProductDetailsByProductId(Long productId) {
+        return productDetailsRepository.findByProductId(productId);
+    }
+
+    public List<ProductDetailsDTO> getProductDetailsDTOByProductId(Long productId) {
+        // Lấy danh sách ProductDetails theo productId
+        List<ProductDetails> productDetailsList = productDetailsRepository.findByProductId(productId);
+
+        // Chuyển đổi danh sách ProductDetails thành danh sách ProductDetailsDTO
+        return productDetailsList.stream().map(productDetails -> new ProductDetailsDTO(
+                productDetails.getProductDetailId(),
+                productDetails.getProducts().getProductname(),
+                productDetails.getPrice(),
+                productDetails.getProductColors().getColorValue(),
+                productDetails.getProductSizes().getSizeValue(),
+                productDetails.getWeights().getWeightValue(),
+                productDetails.getQuantity(),
+                productDetails.getProducts().getDescription()
+        )).collect(Collectors.toList());
+    }
+
 }
+
+

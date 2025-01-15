@@ -1,10 +1,13 @@
 package com.example.test_datn.service;
 
+import com.example.test_datn.dto.ProductsDTO;
 import com.example.test_datn.model.Brand;
 import com.example.test_datn.model.Categories;
+import com.example.test_datn.model.ProductDetails;
 import com.example.test_datn.model.Products;
 import com.example.test_datn.reponsitory.BrandRepository;
 import com.example.test_datn.reponsitory.CategoriesRepository;
+import com.example.test_datn.reponsitory.ProductDetailsRepository;
 import com.example.test_datn.reponsitory.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductsService {
@@ -22,6 +26,9 @@ public class ProductsService {
     private BrandRepository brandRepository;
     @Autowired
     private CategoriesRepository categoriesRepository;
+
+    @Autowired
+    private ProductDetailsRepository productDetailsRepository;
 
     public List<Products> getAllProducts() {
         return productRepository.findAll();
@@ -91,6 +98,30 @@ public class ProductsService {
         }
     }
 
+
+    @Autowired
+    public ProductsService(ProductRepository productRepository, ProductDetailsRepository productDetailsRepository) {
+        this.productRepository = productRepository;
+        this.productDetailsRepository = productDetailsRepository;
+    }
+
+    public List<ProductsDTO> getAllProductss() {
+        // Lấy tất cả các sản phẩm từ ProductRepository
+        List<ProductsDTO> productsDTOList = productRepository.findAllProductsWithMinPrice();
+
+        // Lấy danh sách giá thấp nhất của từng sản phẩm từ ProductDetailsRepository
+        productsDTOList.forEach(dto -> {
+            // Lấy giá thấp nhất của sản phẩm từ ProductDetailsRepository
+            Float minPrice = productDetailsRepository.findMinPriceByProductId(dto.getProductId());
+
+            // Nếu có giá thấp nhất, cập nhật lại thông tin price của DTO
+            if (minPrice != null) {
+                dto.setPrice(minPrice);  // Cập nhật giá vào DTO
+            }
+        });
+
+        return productsDTOList;
+    }
 
 
 }

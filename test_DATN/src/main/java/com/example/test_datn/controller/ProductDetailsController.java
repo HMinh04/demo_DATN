@@ -1,10 +1,13 @@
 package com.example.test_datn.controller;
 
 import com.example.test_datn.dto.ProductDetailsDTO;
+import com.example.test_datn.model.ProductDetails;
 import com.example.test_datn.service.ProductDetailsService;
+import com.example.test_datn.service.ProductImagesService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -12,20 +15,36 @@ import java.util.List;
 @RequestMapping("/api/productDetails")
 public class ProductDetailsController {
 
+    @Autowired
     private final ProductDetailsService productDetailsService;
 
-    @GetMapping("/getAllProductDetails")
+    @Autowired
+    private final ProductImagesService productImagesService;
+
+    @GetMapping("/getAll")
     public List<ProductDetailsDTO> getAllProductDetails() {
-        return productDetailsService.findAllProductDetails();
+        List<ProductDetailsDTO> productDetailsList = productDetailsService.findAllProductDetails();
+        for (ProductDetailsDTO productDetails : productDetailsList) {
+            List<String> imageUrls = productImagesService.getImageUrlsByProductDetailId(productDetails.getProductDetailId());
+
+            if (imageUrls != null && !imageUrls.isEmpty()) {
+                productDetails.setImageUrls(imageUrls);
+            }
+        }
+        return productDetailsList;
     }
 
-    @GetMapping("/getByIdProductDetails/{productDetailId}")
+    @GetMapping("/getById/{productDetailId}")
     public ProductDetailsDTO getProductDetails(@PathVariable Long productDetailId) {
-        return productDetailsService.getProductDetailsById(productDetailId);
+        ProductDetailsDTO productDetails = productDetailsService.getProductDetailsById(productDetailId);
+        List<String> imageUrls = productImagesService.getImageUrlsByProductDetailId(productDetailId);
+        productDetails.setImageUrls(imageUrls);
+
+        return productDetails;
     }
 
 
-    @GetMapping("/findProductDetailId")
+    @GetMapping("/find")
     public Long findProductDetailId(
             @RequestParam String colorValue,
             @RequestParam String sizeValue,
@@ -34,24 +53,80 @@ public class ProductDetailsController {
         return productDetailsService.getProductDetailIdByVariants(colorValue, sizeValue, weightValue);
     }
 
-    @GetMapping("/getProductDetails")
-    public ProductDetailsDTO getProductDetails(
-            @RequestParam(required = false) Long productDetailId,
-            @RequestParam(required = false) String color,  // Thay colorValue thành color
-            @RequestParam(required = false) String size,   // Thay sizeValue thành size
-            @RequestParam(required = false) String weight) {  // Thay weightValue thành weight
 
-        if (productDetailId != null) {
-            // Nếu có productDetailId, tìm sản phẩm dựa trên ID
-            return productDetailsService.getProductDetailsById(productDetailId);
-        } else if (color != null && size != null && weight != null) {
-            // Nếu không có productDetailId, tìm ID bằng biến thể và lấy thông tin sản phẩm
-            Long foundProductDetailId = productDetailsService.getProductDetailIdByVariants(color, size, weight);
-            return productDetailsService.getProductDetailsById(foundProductDetailId);
-        } else {
-            throw new RuntimeException("Thiếu tham số cần thiết để tìm sản phẩm.");
+
+
+@GetMapping("/getProductDetails")
+public ProductDetailsDTO getProductDetails(
+        @RequestParam(required = false) Long productDetailId,
+        @RequestParam(required = false) String color,
+        @RequestParam(required = false) String size,
+        @RequestParam(required = false) String weight) {
+
+    if (productDetailId != null) {
+        ProductDetailsDTO productDetails = productDetailsService.getProductDetailsById(productDetailId);
+        List<String> imageUrls = productImagesService.getImageUrlsByProductDetailId(productDetailId);
+        if (imageUrls != null && !imageUrls.isEmpty()) {
+            productDetails.setImageUrls(imageUrls);
         }
+        return productDetails;
+    } else if (color != null && size != null && weight != null) {
+        Long foundProductDetailId = productDetailsService.getProductDetailIdByVariants(color, size, weight);
+        if (foundProductDetailId != null) {
+            ProductDetailsDTO productDetails = productDetailsService.getProductDetailsById(foundProductDetailId);
+
+            List<String> imageUrls = productImagesService.getImageUrlsByProductDetailId(foundProductDetailId);
+
+            if (imageUrls != null && !imageUrls.isEmpty()) {
+                productDetails.setImageUrls(imageUrls);
+            }
+
+            return productDetails;
+        } else {
+            throw new RuntimeException("Không tìm thấy sản phẩm với các biến thể này.");
+        }
+    } else {
+        throw new RuntimeException("Thiếu tham số cần thiết để tìm sản phẩm.");
     }
+}
+
+
+
+    /**
+     * Lấy danh sách ProductDetails theo productId.
+     *
+     * @param productId ID của sản phẩm.
+     * @return Danh sách ProductDetails.
+     */
+    @GetMapping("/by-product/{productId}")
+    public ResponseEntity<List<ProductDetails>> getProductDetailsByProductId(@PathVariable Long productId) {
+        List<ProductDetails> productDetailsList = productDetailsService.getProductDetailsByProductId(productId);
+        return ResponseEntity.ok(productDetailsList);
+    }
+
+    /**
+     * Lấy danh sách ProductDetailsDTO theo productId (chỉ trả lại thông tin cần thiết).
+     *
+     * @param productId ID của sản phẩm.
+     * @return Danh sách ProductDetailsDTO.
+     */
+    @GetMapping("/dto/by-product/{productId}")
+    public ResponseEntity<List<ProductDetailsDTO>> getProductDetailsDTOByProductId(@PathVariable Long productId) {
+        // Lấy danh sách ProductDetailsDTO theo productId
+        List<ProductDetailsDTO> productDetailsDTOList = productDetailsService.getProductDetailsDTOByProductId(productId);
+
+        // Duyệt qua danh sách và thêm imageUrls từ ProductImagesService
+        for (ProductDetailsDTO productDetails : productDetailsDTOList) {
+            List<String> imageUrls = productImagesService.getImageUrlsByProductDetailId(productDetails.getProductDetailId());
+
+            if (imageUrls != null && !imageUrls.isEmpty()) {
+                productDetails.setImageUrls(imageUrls); // Gán danh sách URL hình ảnh
+            }
+        }
+
+        return ResponseEntity.ok(productDetailsDTOList); // Trả về danh sách DTO
+    }
+
 
 
 

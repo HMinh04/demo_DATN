@@ -1,9 +1,11 @@
-package com.example.test_datn.repository;
+package com.example.test_datn.reponsitory;
 
 import com.example.test_datn.dto.ProductDetailsDTO;
+import com.example.test_datn.dto.ProductsDTO;
 import com.example.test_datn.model.ProductDetails;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,8 +14,9 @@ import java.util.Optional;
 @Repository
 public interface ProductDetailsRepository extends JpaRepository<ProductDetails, Long> {
 
+    // Fetch product details by ID
     @Query("SELECT new com.example.test_datn.dto.ProductDetailsDTO(" +
-            "p.productname, dp.price, pc.colorValue, ps.sizeValue, w.weightValue, dp.quantity) " +
+            "dp.productDetailId, p.productname, dp.price, pc.colorValue, ps.sizeValue, w.weightValue, dp.quantity, p.description) " +
             "FROM ProductDetails dp " +
             "JOIN dp.products p " +
             "JOIN dp.productColors pc " +
@@ -22,10 +25,9 @@ public interface ProductDetailsRepository extends JpaRepository<ProductDetails, 
             "WHERE dp.productDetailId = :productDetailId")
     Optional<ProductDetailsDTO> findByProductDetailId(Long productDetailId);
 
-
-    // Câu query để lấy tất cả chi tiết sản phẩm
+    // Fetch all product details
     @Query("SELECT new com.example.test_datn.dto.ProductDetailsDTO(" +
-            "p.productname, dp.price, pc.colorValue, ps.sizeValue, w.weightValue, dp.quantity) " +
+            "dp.productDetailId, p.productname, dp.price, pc.colorValue, ps.sizeValue, w.weightValue, dp.quantity, p.description) " +
             "FROM ProductDetails dp " +
             "JOIN dp.products p " +
             "JOIN dp.productColors pc " +
@@ -33,6 +35,7 @@ public interface ProductDetailsRepository extends JpaRepository<ProductDetails, 
             "JOIN dp.weights w")
     List<ProductDetailsDTO> findAllProductDetails();
 
+    // Fetch product detail by color, size, and weight
     @Query("SELECT pd FROM ProductDetails pd " +
             "JOIN pd.productColors pc " +
             "JOIN pd.productSizes ps " +
@@ -41,4 +44,27 @@ public interface ProductDetailsRepository extends JpaRepository<ProductDetails, 
             "AND ps.sizeValue = :sizeValue " +
             "AND w.weightValue = :weightValue")
     Optional<ProductDetails> findByColorSizeWeight(String colorValue, String sizeValue, String weightValue);
+
+
+
+//    // Truy vấn để lấy danh sách giá của sản phẩm theo productId
+//    @Query("SELECT pd.price FROM ProductDetails pd WHERE pd.products.productid = :productId")
+//    List<Float> findPricesByProductId(@Param("productId") Long productId);
+//
+//    // Truy vấn để lấy giá thấp nhất của sản phẩm theo productId
+//    @Query("SELECT MIN(pd.price) FROM ProductDetails pd WHERE pd.products.productid = :productId")
+//    Float findMinPriceByProductId(@Param("productId") Long productId);
+//
+//    // Truy vấn để lấy giá cao nhất của sản phẩm theo productId
+//    @Query("SELECT MAX(pd.price) FROM ProductDetails pd WHERE pd.products.productid = :productId")
+//    Float findMaxPriceByProductId(@Param("productId") Long productId);
+
+    @Query("SELECT MIN(pd.price) FROM ProductDetails pd WHERE pd.products.productid = :productId")
+    Float findMinPriceByProductId(@Param("productId") Long productId);
+
+    // Tìm tất cả ProductDetails theo productId
+    @Query("SELECT pd FROM ProductDetails pd WHERE pd.products.productid = :productId")
+    List<ProductDetails> findByProductId(@Param("productId") Long productId);
+
+
 }

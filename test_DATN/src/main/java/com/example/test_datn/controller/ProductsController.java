@@ -1,5 +1,6 @@
 package com.example.test_datn.controller;
 
+import com.example.test_datn.dto.ProductsDTO;
 import com.example.test_datn.model.Products;
 import com.example.test_datn.service.ProductsService;
 import jakarta.validation.Valid;
@@ -54,6 +55,11 @@ public class ProductsController {
     public ResponseEntity<String> deleteProduct(@PathVariable Long productsId) {
         productsService.delete(productsId);
         return ResponseEntity.ok("Sản phẩm với ID " + productsId + " đã được xóa thành công.");
+    }
+
+    @GetMapping("/getAllProductss")
+    public List<ProductsDTO> getAllProductss() {
+        return productsService.getAllProductss();
     }
 
 }
