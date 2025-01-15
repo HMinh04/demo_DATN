@@ -1,9 +1,11 @@
 package com.example.test_datn.controller;
 
 import com.example.test_datn.model.Categories;
+import com.example.test_datn.model.Weights;
 import com.example.test_datn.service.CategoriesService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,10 +24,15 @@ public class CategoriesController {
         return categoriesService.getAllCategories();
     }
 
+    @GetMapping("/activeProductCategories")
+    public List<Categories> getActiveProductCategories() {
+        return categoriesService.getActiveCategories();
+    }
+
     // Lấy một Category theo ID
-    @GetMapping("/getByIdCategories/{categoriesId}")
-    public Categories getCategoriesById(@PathVariable Long categoriesId) {
-        return categoriesService.getCategoriesById(categoriesId);
+    @GetMapping("/getByIdCategories/{categoryId}")
+    public Categories getCategoriesById(@PathVariable Long categoryId) {
+        return categoriesService.getCategoriesById(categoryId);
     }
 
     // Tạo mới một Category
@@ -36,17 +43,19 @@ public class CategoriesController {
     }
 
     // Cập nhật Category theo ID
-    @PutMapping("/updateCategories/{categoriesId}")
-    public Categories updateCategory(
-            @PathVariable Long categoriesId,
-            @RequestParam @Valid String newCategoryName) {
-        return categoriesService.update(categoriesId, newCategoryName);
+    @PutMapping("/updateProductCategories/{categoryId}")
+    public ResponseEntity<Categories> updateProductCategories(@PathVariable Long categoryId, @Valid @RequestBody Categories categories) {
+        Categories updatedCategories = categoriesService.updateCategories(categoryId, categories);
+        return updatedCategories != null
+                ? ResponseEntity.ok(updatedCategories)
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
+
     // Xóa một Category theo ID
-    @DeleteMapping("/deleteCategories/{categoriesId}")
-    public ResponseEntity<String> deleteCategory(@PathVariable Long categoriesId) {
-        categoriesService.delete(categoriesId);
-        return ResponseEntity.ok("Danh mục với ID " + categoriesId + " đã được xóa thành công.");
+    @DeleteMapping("/deleteCategories/{categoryId}")
+    public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId) {
+        categoriesService.delete(categoryId);
+        return ResponseEntity.ok("Danh mục với ID " + categoryId + " đã được xóa thành công.");
     }
 }

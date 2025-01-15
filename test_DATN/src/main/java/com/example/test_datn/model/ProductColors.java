@@ -21,4 +21,5 @@ public class ProductColors {
     @NotBlank(message = "Màu sắc không được để trống")
     @Size(min = 1, max = 255, message = "Màu sắc phải có từ 1 đến 255 ký tự")
     private String colorValue;
+    private Boolean status;
 }

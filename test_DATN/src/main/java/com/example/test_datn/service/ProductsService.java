@@ -38,14 +38,14 @@ public class ProductsService {
         }
 
         // Kiểm tra null cho categories ID
-        if (product.getCategories() == null || product.getCategories().getCategorieid() == null) {
+        if (product.getCategories() == null || product.getCategories().getCategoryId() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Categories ID không được để trống");
         }
 
         // Kiểm tra và lấy dữ liệu từ database
         Brand existingBrand = brandRepository.findById(product.getBrand().getBrandId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Thương hiệu không tồn tại"));
-        Categories existingCategory = categoriesRepository.findById(product.getCategories().getCategorieid())
+        Categories existingCategory = categoriesRepository.findById(product.getCategories().getCategoryId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Danh mục không tồn tại"));
 
         // Gán giá trị chính xác cho product
@@ -73,8 +73,8 @@ public class ProductsService {
             existingProduct.setBrand(brand);
 
             // Lấy Category mới và gán
-            Categories category = categoriesRepository.findById(updatedProduct.getCategories().getCategorieid())
-                    .orElseThrow(() -> new IllegalArgumentException("Danh mục không tồn tại với ID: " + updatedProduct.getCategories().getCategorieid()));
+            Categories category = categoriesRepository.findById(updatedProduct.getCategories().getCategoryId())
+                    .orElseThrow(() -> new IllegalArgumentException("Danh mục không tồn tại với ID: " + updatedProduct.getCategories().getCategoryId()));
             existingProduct.setCategories(category);
 
             // Lưu sản phẩm đã cập nhật
