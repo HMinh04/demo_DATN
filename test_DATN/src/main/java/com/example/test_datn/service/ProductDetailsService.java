@@ -2,7 +2,7 @@ package com.example.test_datn.service;
 
 import com.example.test_datn.dto.ProductDetailsDTO;
 import com.example.test_datn.model.ProductDetails;
-import com.example.test_datn.repository.ProductDetailsRepository;
+import com.example.test_datn.reponsitory.ProductDetailsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
