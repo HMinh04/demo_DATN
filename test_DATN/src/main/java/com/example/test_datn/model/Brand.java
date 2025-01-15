@@ -21,4 +21,5 @@ public class Brand {
     @Pattern(regexp = "^[a-zA-Z0-9\\p{L}\\p{Z}.,!?;:\"()\\-]+$",
             message = "Tên thương hiệu không được chứa ký tự đặc biệt")
     private String brandName;
+    private Boolean status;
 }

@@ -1,6 +1,7 @@
 package com.example.test_datn.service;
 
 import com.example.test_datn.model.Categories;
+import com.example.test_datn.model.Weights;
 import com.example.test_datn.reponsitory.CategoriesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,12 @@ public class CategoriesService {
         return categoriesRepository.findAll();
     }
 
+    public List<Categories> getActiveCategories() {
+        return categoriesRepository.findAll().stream()
+                .filter(Categories::getStatus)
+                .toList();
+    }
+
     // Lấy một danh mục theo ID
     public Categories getCategoriesById(Long categoriesId) {
         return categoriesRepository.findById(categoriesId)
@@ -32,12 +39,23 @@ public class CategoriesService {
     }
 
     // Cập nhật danh mục theo ID
-    public Categories update(Long categorieId, String newCategoryName) {
-        return categoriesRepository.findById(categorieId).map(category -> {
-            category.setCategoriename(newCategoryName);
-            return categoriesRepository.save(category);
-        }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy danh mục với ID: " + categorieId));
+    public Categories updateCategories(Long id, Categories categoriesDetails) {
+        Categories categories = categoriesRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy Loại sản phẩm cho id này :: " + id));
+
+        // Cập nhật tên categoriesValue
+        categories.setCategoryName(categoriesDetails.getCategoryName());
+
+        // Cập nhật trạng thái status nếu có
+        if (categoriesDetails.getStatus() != null) {
+            categories.setStatus(categoriesDetails.getStatus());
+        }
+
+        // Lưu đối tượng đã cập nhật vào cơ sở dữ liệu
+        return categoriesRepository.save(categories);
     }
+
+
 
     // Xóa danh mục theo ID
     public void delete(Long categorieId) {

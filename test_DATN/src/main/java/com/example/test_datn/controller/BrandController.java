@@ -2,6 +2,7 @@ package com.example.test_datn.controller;
 
 
 import com.example.test_datn.model.Brand;
+import com.example.test_datn.model.ProductColors;
 import com.example.test_datn.service.BrandService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,11 @@ public class BrandController {
 
     @Autowired
     private BrandService brandService;
+
+    @GetMapping("/activeBrand")
+    public List<Brand> getActiveBrands() {
+        return brandService.getActiveBrand();
+    }
 
     @GetMapping("/getAllBrand")
     public List<Brand>getAllBrands() {return brandService.getAllBrands();}
