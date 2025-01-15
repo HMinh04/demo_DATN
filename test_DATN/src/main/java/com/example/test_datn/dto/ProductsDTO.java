@@ -20,4 +20,8 @@ public class ProductsDTO {
         this.productName = productName;
         this.image = image;
     }
+
+    public void setPrice(Float price) {
+        this.price = price != null ? price : 0f;  // Đảm bảo luôn là float, trả về 0f nếu giá trị null
+    }
 }

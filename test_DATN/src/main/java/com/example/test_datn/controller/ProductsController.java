@@ -58,8 +58,9 @@ public class ProductsController {
     }
 
     @GetMapping("/getAllProductss")
-    public List<ProductsDTO> getAllProductss() {
-        return productsService.getAllProductss();
+    public ResponseEntity<List<ProductsDTO>> getAllProductss() {
+        List<ProductsDTO> productsDTOList = productsService.getAllProductss();
+        return ResponseEntity.ok(productsDTOList);
     }
 
 }
