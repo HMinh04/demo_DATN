@@ -105,23 +105,52 @@ public class ProductsService {
         this.productDetailsRepository = productDetailsRepository;
     }
 
+//    public List<ProductsDTO> getAllProductss() {
+//        // Lấy tất cả các sản phẩm từ ProductRepository
+//        List<ProductsDTO> productsDTOList = productRepository.findAllProductsWithMinPrice();
+//
+//        // Lấy danh sách giá thấp nhất của từng sản phẩm từ ProductDetailsRepository
+//        productsDTOList.forEach(dto -> {
+//            // Lấy giá thấp nhất của sản phẩm từ ProductDetailsRepository
+//            Float minPrice = productDetailsRepository.findMinPriceByProductId(dto.getProductId());
+//
+//            // Nếu có giá thấp nhất, cập nhật lại thông tin price của DTO
+//            if (minPrice != null) {
+//                dto.setPrice(minPrice);  // Cập nhật giá vào DTO
+//            }
+//        });
+//
+//        return productsDTOList;
+//    }
+
     public List<ProductsDTO> getAllProductss() {
         // Lấy tất cả các sản phẩm từ ProductRepository
-        List<ProductsDTO> productsDTOList = productRepository.findAllProductsWithMinPrice();
+        List<Products> products = productRepository.findAll();
 
-        // Lấy danh sách giá thấp nhất của từng sản phẩm từ ProductDetailsRepository
-        productsDTOList.forEach(dto -> {
-            // Lấy giá thấp nhất của sản phẩm từ ProductDetailsRepository
-            Float minPrice = productDetailsRepository.findMinPriceByProductId(dto.getProductId());
+        // Lọc và map các sản phẩm có ít nhất một ProductDetails
+        return products.stream()
+                .filter(product -> !productDetailsRepository.findByProductId(product.getProductid()).isEmpty()) // Chỉ lấy sản phẩm có ProductDetails
+                .map(product -> {
+                    // Lấy giá thấp nhất của sản phẩm
+                    Float minPrice = productDetailsRepository.findMinPriceByProductId(product.getProductid());
+                    // Tạo ProductsDTO và set thông tin
+                    ProductsDTO productDTO = new ProductsDTO(
+                            product.getProductid(),
+                            product.getProductname(),
+                            product.getImage()
+                    );
 
-            // Nếu có giá thấp nhất, cập nhật lại thông tin price của DTO
-            if (minPrice != null) {
-                dto.setPrice(minPrice);  // Cập nhật giá vào DTO
-            }
-        });
+                    // Set giá trị price
+                    productDTO.setPrice(minPrice);  // Gọi setter, sẽ ép kiểu float và xử lý null nếu cần
 
-        return productsDTOList;
+                    return productDTO;
+                })
+                .collect(Collectors.toList());
     }
+
+
+
+
 
 
 }
