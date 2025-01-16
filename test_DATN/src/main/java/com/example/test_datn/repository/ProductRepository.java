@@ -1,4 +1,4 @@
-package com.example.test_datn.reponsitory;
+package com.example.test_datn.repository;
 
 import com.example.test_datn.dto.ProductsDTO;
 import com.example.test_datn.model.Products;

@@ -32,7 +32,7 @@ public class ProductWeightController {
         return productWeight.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-    @PostMapping("/createProductWeight/")
+    @PostMapping("/createProductWeight")
     public ResponseEntity<Weights> createProductWeight(@RequestBody @Valid Weights productWeight) {
         Weights createProductWeight = productWeightService.createWeight(productWeight);
         return ResponseEntity.status(201).body(createProductWeight);

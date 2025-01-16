@@ -1,9 +1,7 @@
 package com.example.test_datn.controller;
 
 import com.example.test_datn.model.ProductSizes;
-import com.example.test_datn.model.Weights;
 import com.example.test_datn.service.ProductSizeService;
-import jakarta.persistence.Id;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,7 +32,7 @@ public class ProductSizeController {
         return productSize.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-    @PostMapping("/createProductSize/")
+    @PostMapping("/createProductSize")
     public ResponseEntity<ProductSizes> createProductSize(@RequestBody @Valid ProductSizes productSizes) {
         ProductSizes createProductSize = productSizeService.createSize(productSizes);
         return ResponseEntity.status(201).body(createProductSize);
