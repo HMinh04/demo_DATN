@@ -1,7 +1,6 @@
-package com.example.test_datn.reponsitory;
+package com.example.test_datn.repository;
 
 import com.example.test_datn.dto.ProductDetailsDTO;
-import com.example.test_datn.dto.ProductsDTO;
 import com.example.test_datn.model.ProductDetails;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

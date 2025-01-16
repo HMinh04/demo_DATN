@@ -1,8 +1,7 @@
 package com.example.test_datn.service;
 
 import com.example.test_datn.model.ProductColors;
-import com.example.test_datn.model.Weights;
-import com.example.test_datn.reponsitory.ProductColorsRepository;
+import com.example.test_datn.repository.ProductColorsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

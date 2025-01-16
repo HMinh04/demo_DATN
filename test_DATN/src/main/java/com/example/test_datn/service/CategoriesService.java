@@ -1,8 +1,7 @@
 package com.example.test_datn.service;
 
 import com.example.test_datn.model.Categories;
-import com.example.test_datn.model.Weights;
-import com.example.test_datn.reponsitory.CategoriesRepository;
+import com.example.test_datn.repository.CategoriesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

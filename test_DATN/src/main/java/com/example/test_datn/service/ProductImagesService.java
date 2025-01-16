@@ -1,7 +1,7 @@
 package com.example.test_datn.service;
 
 import com.example.test_datn.model.ProductImages;
-import com.example.test_datn.reponsitory.ProductImagesRepository;
+import com.example.test_datn.repository.ProductImagesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

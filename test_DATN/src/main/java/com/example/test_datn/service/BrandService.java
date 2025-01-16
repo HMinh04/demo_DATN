@@ -2,8 +2,7 @@ package com.example.test_datn.service;
 
 import com.example.test_datn.model.Brand;
 
-import com.example.test_datn.model.ProductColors;
-import com.example.test_datn.reponsitory.BrandRepository;
+import com.example.test_datn.repository.BrandRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
